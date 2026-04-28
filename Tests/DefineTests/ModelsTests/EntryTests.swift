@@ -3,9 +3,12 @@ import XCTest
 @testable import Define
 
 class EntryTests: XCTestCase {
-  func testDescriptionBeginsWithTheDefinedWord() {
+  let entries = {
     let api = DictionaryApi()
-    let entries = try! api.decode(entries: entriesData)
+    return try! api.decode(entries: entriesData)
+  }()
+
+  func testDescriptionBeginsWithTheDefinedWord() {
     let description = entries[0].describe().trimmingCharacters(in: .whitespacesAndNewlines)
     let startsWithWord = description.hasPrefix("Unctuous")
     XCTAssertTrue(
