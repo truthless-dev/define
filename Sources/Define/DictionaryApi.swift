@@ -50,4 +50,20 @@ public struct DictionaryApi {
     }
     return (data, response as! HTTPURLResponse)
   }
+
+  func decode(entries data: Data) throws(DefineError) -> [Entry] {
+    do {
+      return try decoder.decode([Entry].self, from: data)
+    } catch {
+      throw .invalidJSON("\(error.localizedDescription)")
+    }
+  }
+
+  func decode(notFound data: Data) throws(DefineError) -> NotFound {
+    do {
+      return try decoder.decode(NotFound.self, from: data)
+    } catch {
+      throw .invalidJSON("\(error.localizedDescription)")
+    }
+  }
 }
