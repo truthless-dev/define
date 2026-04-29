@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
   name: "Define",
   platforms: [
-    .macOS(.v12)
+    .macOS(.v15)
   ],
   products: [
     .executable(
@@ -26,8 +26,14 @@ let package = Package(
     .executableTarget(
       name: "Cli",
       dependencies: [
-        .product(name: "ArgumentParser", package: "swift-argument-parser")
+        .product(name: "ArgumentParser", package: "swift-argument-parser"),
+        .target(name: "Define"),
       ]
-    )
+    ),
+    .target(name: "Define"),
+    .testTarget(
+      name: "DefineTests",
+      dependencies: ["Define"]
+    ),
   ]
 )

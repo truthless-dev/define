@@ -2,6 +2,10 @@
 
 Get definitions of English words from the command line
 
+## Usage
+
+Simply run `define <word>` to look up a word in the dictionary. For more options, run `define --help`.
+
 ## Dictionary Source
 
 This program utilizes the [Free Dictionary API](free-dictionary-api) to obtain all of its definitions, phonetics, synonyms, and antonyms. All credit and thanks should be directed toward the owner of that generous project.

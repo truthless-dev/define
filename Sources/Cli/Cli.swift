@@ -1,14 +1,26 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
-//
-// Swift Argument Parser
-// https://swiftpackageindex.com/apple/swift-argument-parser/documentation
-
 import ArgumentParser
+import Define
 
 @main
-struct Define: ParsableCommand {
-  mutating func run() throws {
-    print("Hello, world!")
+struct Define: AsyncParsableCommand {
+  static let configuration = CommandConfiguration(
+    commandName: packageName.lowercased(),
+    abstract: "Look up a word or phrase in a dictionary",
+    discussion: """
+      This tool makes requests to the Free Dictionary API at \
+      www.dictionaryapi.dev. Thank you to the maintainer of that \
+      resource. Please take care not to overwhelm the server with \
+      requests.
+      """,
+    version: packageVersion
+  )
+
+  @Argument(help: "The word or phrase to define.")
+  var word: String
+
+  mutating func run() async throws {
+    let api = DictionaryApi()
+    let definition = try await api.define(word: word)
+    print(definition)
   }
 }
