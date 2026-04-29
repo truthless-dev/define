@@ -8,7 +8,7 @@ test:
 	swift test -Xswiftc -warnings-as-errors
 
 install: build
-	install ".build/release/define" "$(bindir)"
+	install "$$(swift build -c release --show-bin-path)/define" "$(bindir)"
 
 uninstall:
 	rm -f "$(bindir)/define"
