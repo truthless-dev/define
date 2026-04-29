@@ -66,4 +66,40 @@ public struct DictionaryApi {
       throw .invalidJSON("\(error.localizedDescription)")
     }
   }
+
+  /// Look up the definition of a word or phrase.
+  ///
+  /// Main entrypoint that clients use to interact with the API. This
+  /// makes an HTTP GET request to the API and provides the result in a
+  /// human-readable format.
+  ///
+  /// - Parameters:
+  ///   - word: The word (or phrase) to look up.
+  ///
+  /// - Returns: A textual, user-friendly representation of the lookup's
+  ///   result.
+  ///
+  /// - Throws: `DefineError` if the input is invalid, the JSON of the
+  ///   response body cannot be parsed, or there was a network issue.
+  public func define(word: String) async throws(DefineError) -> String {
+    guard let url = makeRequestUrl(defining: word) else {
+      throw .invalidInput("Invalid word or phrase '\(word)'.")
+    }
+    guard let (data, response) = await request(url: url) else {
+      throw .network(code: nil)
+    }
+    switch response.statusCode {
+    case 200:
+      let entries = try decode(entries: data)
+      return
+        entries
+        .map { $0.describe() }
+        .joined(separator: "\n")
+    case 404:
+      let notFound = try decode(notFound: data)
+      return String(describing: notFound)
+    default:
+      throw .network(code: response.statusCode)
+    }
+  }
 }
