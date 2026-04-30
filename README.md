@@ -24,11 +24,11 @@ Note that the fully qualified name `truthless-dev/formulae/define` is necessary.
 
 ### GitHub Releases
 
-Download a compressed archive containing the executable from the project's [latest release page](gh-release-latest). Extract it, and move it to a location available in your $PATH.
+Download a compressed archive containing the executable from the project's [latest release page][gh-release-latest]. Extract it, and move it to a location available in your $PATH.
 
 ### Build from Source
 
-Obtain an archive of the source code from the project's [latest release page](gh-release-latest). Extract it, then run the following:
+Obtain an archive of the source code from the project's [latest release page][gh-release-latest]. Extract it, then run the following:
 
 ```shell
 make
@@ -45,7 +45,7 @@ Simply run `define <word>` to look up a word in the dictionary. For more options
 
 ## Dictionary Source
 
-This program utilizes the [Free Dictionary API](free-dictionary-api) to obtain all of its definitions, phonetics, synonyms, and antonyms. All credit and thanks should be directed toward the owner of that generous project.
+This program utilizes the [Free Dictionary API][free-dictionary-api] to obtain all of its definitions, phonetics, synonyms, and antonyms. All credit and thanks should be directed toward the owner of that generous project.
 
 Users should please endeavor not to overwhelm that server with requests. If you need to check a dictionary so often, maybe you should buy a physical one to keep at your desk!
 
