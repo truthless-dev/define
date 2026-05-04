@@ -1,19 +1,63 @@
-prefix ?= /usr/local
-bindir = $(prefix)/bin
+PREFIX ?= /usr/local
+bindir := $(PREFIX)/bin
+
+SWIFT := swift
+SWIFTFLAGS :=
+TARGET := Define
+MIN_ACCESS_LEVEL := public
+
+repo := define
+docsdir := ./Docs
+package := Define
+executable := define
+
+
+.PHONY: build docs docs-preview lint format test install dist uninstall mostlyclean clean bump
 
 build:
-	swift build --disable-sandbox -c release
+	$(SWIFT) build -c release $(SWIFTFLAGS)
+
+docs:
+	$(SWIFT) package --allow-writing-to-directory "$(docsdir)" \
+		generate-documentation --target $(TARGET) \
+		--disable-indexing \
+		--transform-for-static-hosting \
+		--hosting-base-path $(repo) \
+		--output-path "$(docsdir)"
+
+docs-preview:
+	$(SWIFT) package --disable-sandbox \
+		preview-documentation --target $(TARGET) \
+		--symbol-graph-minimum-access-level $(MIN_ACCESS_LEVEL)
+
+lint:
+	$(SWIFT) format lint --strict --recursive .
+
+format:
+	$(SWIFT) format --in-place --recursive .
 
 test:
-	swift test -Xswiftc -warnings-as-errors
+	$(SWIFT) test -Xswiftc -warnings-as-errors
 
 install: build
-	install "$$(swift build -c release --show-bin-path)/define" "$(bindir)"
+	install "$$($(SWIFT) build -c release --show-bin-path)/$(executable)" "$(bindir)"
+
+dist: build
+	-mkdir .dist
+	-mkdir ".dist/$(package)"
+	cp "$$($(SWIFT) build -c release --show-bin-path)/$(executable)" ".dist/$(package)/"
+	tar -czf ".dist/$(package)_$$(cz version --project)_macOS.tar.gz" -C .dist "$(package)"
+	@echo "Done."
 
 uninstall:
-	rm -f "$(bindir)/define"
+	-rm -f "$(bindir)/$(executable)"
 
-clean:
-	rm -rf .build
+mostlyclean:
+	-$(SWIFT) package clean
+	-rm -rf .dist
 
-.PHONY: build test install uninstall clean
+clean: mostlyclean
+	-rm -rf .build
+
+bump:
+	./Scripts/bump.sh "$(VERSION)"
