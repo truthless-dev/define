@@ -112,4 +112,38 @@ class DefineTests: XCTestCase {
     expect.fulfill()
     await fulfillment(of: [expect], timeout: 1.0)
   }
+
+  func testNoPhoneticsAreShownByDefault() async {
+    let response = responseOK()
+    MockURLProtocol.mock(data: entriesData, response: response)
+    let expect = expectation(description: "Waiting for completion.")
+
+    do {
+      let result = try await api!.define(word: "test")
+      let hasPhonetics = result.contains("/ˈʌnktʃuəs/")
+      XCTAssertFalse(hasPhonetics, "Default display should not show phonetics.")
+    } catch {
+      XCTFail("Unexpected error type \(type(of: error)): \(error).")
+    }
+
+    expect.fulfill()
+    await fulfillment(of: [expect], timeout: 1.0)
+  }
+
+  func testIncludingPhonetics() async {
+    let response = responseOK()
+    MockURLProtocol.mock(data: entriesData, response: response)
+    let expect = expectation(description: "Waiting for completion.")
+
+    do {
+      let result = try await api!.define(word: "test", includingPhonetics: true)
+      let hasPhonetics = result.contains("/ˈʌnktʃuəs/")
+      XCTAssertTrue(hasPhonetics, "Missing requested phonetics in output '\(result)'.")
+    } catch {
+      XCTFail("Unexpected error type \(type(of: error)): \(error).")
+    }
+
+    expect.fulfill()
+    await fulfillment(of: [expect], timeout: 1.0)
+  }
 }

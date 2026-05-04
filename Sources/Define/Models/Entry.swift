@@ -5,6 +5,8 @@
 struct Entry: Codable {
   let word: String
   let meanings: [Meaning]
+  let phonetic: String?
+  let phonetics: [Phonetic]
 
   struct Meaning: Codable {
     let partOfSpeech: String
@@ -32,14 +34,37 @@ struct Entry: Codable {
     }
   }
 
+  struct Phonetic: Codable {
+    let text: String?
+
+    func describe() -> String {
+      text ?? ""
+    }
+  }
+
+  func describePhonetics() -> String {
+    let phoneticsList = Set([phonetic ?? ""] + phonetics.map { $0.describe() })
+    return phoneticsList.filter { !$0.isEmpty }.sorted().joined(separator: ", ")
+  }
+
   /// Generate a user-friendly description of the Entry.
-  func describe() -> String {
+  func describe(includingPhonetics: Bool = false) -> String {
+    let term = word.capitalized
+
+    let header =
+      if includingPhonetics {
+        "\(term) [\(describePhonetics())]"
+      } else {
+        term
+      }
+
     let meaningSections =
       meanings
       .map { $0.describe() }
       .joined(separator: "\n")
+
     return """
-      \(word.capitalized)
+      \(header)
       \(meaningSections)
 
       """

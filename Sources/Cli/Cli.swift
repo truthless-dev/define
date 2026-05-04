@@ -18,9 +18,12 @@ struct Define: AsyncParsableCommand {
   @Argument(help: "The word or phrase to define.")
   var word: String
 
+  @Flag(name: [.short, .long], help: "Whether to include phonetic pronunciations in the output.")
+  var phonetics = false
+
   mutating func run() async throws {
     let api = DictionaryApi()
-    let definition = try await api.define(word: word)
+    let definition = try await api.define(word: word, includingPhonetics: phonetics)
     print(definition)
   }
 }
