@@ -81,7 +81,9 @@ public struct DictionaryApi {
   ///
   /// - Throws: `DefineError` if the input is invalid, the JSON of the
   ///   response body cannot be parsed, or there was a network issue.
-  public func define(word: String) async throws(DefineError) -> String {
+  public func define(word: String, includingPhonetics phonetics: Bool = false)
+    async throws(DefineError) -> String
+  {
     guard let url = makeRequestUrl(defining: word) else {
       throw .invalidInput("Invalid word or phrase '\(word)'.")
     }
@@ -93,7 +95,7 @@ public struct DictionaryApi {
       let entries = try decode(entries: data)
       return
         entries
-        .map { $0.describe() }
+        .map { $0.describe(includingPhonetics: phonetics) }
         .joined(separator: "\n")
     case 404:
       let notFound = try decode(notFound: data)
