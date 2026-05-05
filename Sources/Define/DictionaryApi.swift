@@ -75,6 +75,8 @@ public struct DictionaryApi {
   ///
   /// - Parameters:
   ///   - word: The word (or phrase) to look up.
+  ///   - phonetics: Add the word's pronunciation guide(s), if available,
+  ///     to the definition.
   ///
   /// - Returns: A textual, user-friendly representation of the lookup's
   ///   result.
