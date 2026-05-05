@@ -4,7 +4,7 @@ import Define
 @main
 struct Define: AsyncParsableCommand {
   static let configuration = CommandConfiguration(
-    commandName: packageName.lowercased(),
+    commandName: PackageMetadata.executable,
     abstract: "Look up a word or phrase in a dictionary",
     discussion: """
       This tool makes requests to the Free Dictionary API at \
@@ -12,7 +12,7 @@ struct Define: AsyncParsableCommand {
       resource. Please take care not to overwhelm the server with \
       requests.
       """,
-    version: packageVersion
+    version: PackageMetadata.version
   )
 
   @Argument(help: "The word or phrase to define.")
