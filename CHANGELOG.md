@@ -1,3 +1,14 @@
+## 2.0.0 (2026-05-04)
+
+### Feat
+
+- **cli**: add --phonetics flag
+- **DictionaryApi**: add ability to include phonetics in the definition
+
+### Fix
+
+- **cz**: match package metadata to cz config #3
+
 ## 1.0.2 (2026-04-29)
 
 ### Fix
