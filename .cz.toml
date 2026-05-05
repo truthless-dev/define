@@ -4,6 +4,6 @@ tag_format = "$version"
 version_scheme = "semver2"
 version = "1.0.2"
 version_files = [
-    "Sources/Define/PackageGlobals.swift:version",
+    "Sources/Define/PackageMetadata.swift:version",
 ]
 major_version_zero = false
