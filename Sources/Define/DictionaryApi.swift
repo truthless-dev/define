@@ -51,6 +51,14 @@ public struct DictionaryApi {
     return (data, response as! HTTPURLResponse)
   }
 
+  /// Decode a successful API response into an array of entries.
+  ///
+  /// - Parameters:
+  ///   - data: The raw response body from a 200 response.
+  ///
+  /// - Returns: The decoded entries.
+  ///
+  /// - Throws: `DefineError.invalidJSON` if the data cannot be decoded.
   func decode(entries data: Data) throws(DefineError) -> [Entry] {
     do {
       return try decoder.decode([Entry].self, from: data)
@@ -59,6 +67,14 @@ public struct DictionaryApi {
     }
   }
 
+  /// Decode a not-found API response.
+  ///
+  /// - Parameters:
+  ///   - data: The raw response body from a 404 response.
+  ///
+  /// - Returns: The decoded not-found response.
+  ///
+  /// - Throws: `DefineError.invalidJSON` if the data cannot be decoded.
   func decode(notFound data: Data) throws(DefineError) -> NotFound {
     do {
       return try decoder.decode(NotFound.self, from: data)
