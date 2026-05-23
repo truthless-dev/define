@@ -131,4 +131,96 @@ class EntryFormatterTests: XCTestCase {
       occurrences, 1,
       "Duplicate phonetic string in header: '\(firstLine)'.")
   }
+
+  // MARK: - Edge cases
+
+  func testEntryWithNoMeaningsProducesJustHeader() {
+    let entry = Entry(word: "silent", meanings: [], phonetic: nil, phonetics: [])
+    let formatter = EntryFormatter()
+    let description = formatter.describe(entry)
+    XCTAssertTrue(
+      description.hasPrefix("Silent"),
+      "Output should start with the capitalized word even when meanings is empty: '\(description)'."
+    )
+    XCTAssertFalse(
+      description.contains("("),
+      "Output should have no part-of-speech when meanings is empty: '\(description)'.")
+  }
+
+  func testEntryWithMultipleMeaningsIncludesAllPartsOfSpeech() {
+    let nounMeaning = Entry.Meaning(
+      partOfSpeech: "noun",
+      definitions: [Entry.Meaning.Definition(definition: "A thing.")])
+    let verbMeaning = Entry.Meaning(
+      partOfSpeech: "verb",
+      definitions: [Entry.Meaning.Definition(definition: "To do something.")])
+    let entry = Entry(
+      word: "run", meanings: [nounMeaning, verbMeaning], phonetic: nil, phonetics: [])
+    let formatter = EntryFormatter()
+    let description = formatter.describe(entry)
+    XCTAssertTrue(
+      description.contains("(noun)"),
+      "Output should include the noun meaning: '\(description)'.")
+    XCTAssertTrue(
+      description.contains("(verb)"),
+      "Output should include the verb meaning: '\(description)'.")
+  }
+
+  func testMeaningWithNoDefinitionsProducesJustPartOfSpeech() {
+    let emptyMeaning = Entry.Meaning(partOfSpeech: "interjection", definitions: [])
+    let entry = Entry(word: "hey", meanings: [emptyMeaning], phonetic: nil, phonetics: [])
+    let formatter = EntryFormatter()
+    let description = formatter.describe(entry)
+    XCTAssertTrue(
+      description.contains("(interjection)"),
+      "Output should include the part of speech: '\(description)'.")
+    XCTAssertFalse(
+      description.contains("1."),
+      "Output should have no numbered definitions when definitions is empty: '\(description)'.")
+  }
+
+  func testNoPhoneticsBothFieldsAbsentProducesEmptyBrackets() {
+    let entry = Entry(word: "bare", meanings: [], phonetic: nil, phonetics: [])
+    let formatter = EntryFormatter(includingPhonetics: true)
+    let firstLine = formatter.describe(entry).components(separatedBy: "\n")[0]
+    XCTAssertTrue(
+      firstLine.contains("[]"),
+      "Header should contain empty brackets when no phonetics are available: '\(firstLine)'.")
+  }
+
+  func testPhoneticsPresentOnlyInPhoneticField() {
+    let entry = Entry(word: "sole", meanings: [], phonetic: "/soʊl/", phonetics: [])
+    let formatter = EntryFormatter(includingPhonetics: true)
+    let firstLine = formatter.describe(entry).components(separatedBy: "\n")[0]
+    XCTAssertTrue(
+      firstLine.contains("/soʊl/"),
+      "Header should show the phonetic-field value: '\(firstLine)'.")
+  }
+
+  func testPhoneticsPresentOnlyInPhoneticsArray() {
+    let entry = Entry(
+      word: "array",
+      meanings: [],
+      phonetic: nil,
+      phonetics: [Entry.Phonetic(text: "/əˈreɪ/")])
+    let formatter = EntryFormatter(includingPhonetics: true)
+    let firstLine = formatter.describe(entry).components(separatedBy: "\n")[0]
+    XCTAssertTrue(
+      firstLine.contains("/əˈreɪ/"),
+      "Header should show phonetics from the phonetics array when phonetic field is nil: '\(firstLine)'."
+    )
+  }
+
+  func testMultipleDistinctPhoneticsAreSortedAndCommaSeparated() {
+    let entry = Entry(
+      word: "both",
+      meanings: [],
+      phonetic: "/boʊθ/",
+      phonetics: [Entry.Phonetic(text: "/bəʊθ/")])
+    let formatter = EntryFormatter(includingPhonetics: true)
+    let firstLine = formatter.describe(entry).components(separatedBy: "\n")[0]
+    XCTAssertTrue(
+      firstLine.contains("/boʊθ/, /bəʊθ/"),
+      "Header should list distinct phonetics sorted and comma-separated: '\(firstLine)'.")
+  }
 }
