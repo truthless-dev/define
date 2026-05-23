@@ -95,9 +95,10 @@ public struct DictionaryApi {
     switch response.statusCode {
     case 200:
       let entries = try decode(entries: data)
+      let formatter = EntryFormatter(includingPhonetics: phonetics)
       return
         entries
-        .map { $0.describe(includingPhonetics: phonetics) }
+        .map { formatter.describe($0) }
         .joined(separator: "\n")
     case 404:
       let notFound = try decode(notFound: data)
