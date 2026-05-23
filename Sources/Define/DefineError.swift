@@ -18,9 +18,9 @@ public enum DefineError: LocalizedError {
       message
     case .network(let code):
       if let code = code {
-        "A network error occured. (code \(code))"
+        "A network error occurred. (code \(code))"
       } else {
-        "A network error occured."
+        "A network error occurred."
       }
     }
   }
