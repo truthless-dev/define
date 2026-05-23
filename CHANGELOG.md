@@ -1,3 +1,9 @@
+## 2.1.0 (2026-05-23)
+
+### Refactor
+
+- **Entry**: extract display logic into EntryFormatter
+
 ## 2.0.0 (2026-05-04)
 
 ### Feat
