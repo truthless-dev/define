@@ -126,4 +126,36 @@ class DecodeTests: XCTestCase {
       XCTFail("Decoding threw error type \(type(of: error)): \(error).")
     }
   }
+
+  func testDecodeEntriesThrowsDefineInvalidJSONError() {
+    let api = DictionaryApi()
+    let notJSON = "not json at all".data(using: .utf8)!
+    do {
+      let _ = try api.decode(entries: notJSON)
+      XCTFail("Non-JSON data should throw an error.")
+    } catch {
+      switch error {
+      case .invalidJSON:
+        break
+      default:
+        XCTFail("Expected .invalidJSON, got \(error).")
+      }
+    }
+  }
+
+  func testBadlyFormedNotFoundThrowsDefineInvalidJSONError() {
+    let api = DictionaryApi()
+    let malformedJSON = "{ unclosed".data(using: .utf8)!
+    do {
+      let _ = try api.decode(notFound: malformedJSON)
+      XCTFail("Malformed JSON should throw an error.")
+    } catch {
+      switch error {
+      case .invalidJSON:
+        break
+      default:
+        XCTFail("Expected .invalidJSON, got \(error).")
+      }
+    }
+  }
 }
